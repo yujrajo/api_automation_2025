@@ -1,0 +1,2 @@
+curl -X GET https://api.todoist.com/rest/v2/projects -H "Authorization: Bearer $token" -o negative_make_a_request_with_and_incorrect_token.txt
+Forbidden

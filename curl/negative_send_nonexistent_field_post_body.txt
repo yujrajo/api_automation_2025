@@ -1,0 +1,2 @@
+curl "https://api.todoist.com/rest/v2/projects" -X POST -d '{ "name": "Send nonexistent field", "field": "Nonexistent }' -H "Content-Type: application/json" -H "Authorization: Bearer $token" -o negative_send_nonexistent_field_post_body.txt
+{"error":"Bad Request","error_code":42,"error_extra":{"event_id":"f450d188657d4649906740fc93c7f2a2","retry_after":4},"error_tag":"BAD_REQUEST","http_code":400}

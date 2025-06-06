@@ -1,0 +1,2 @@
+ curl -X DELETE "https://api.todoist.com/rest/v2/projects/$id_project" -H "Authorization: Bearer $token" -o delete_project.txt
+ 

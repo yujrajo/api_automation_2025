@@ -1,0 +1,17 @@
+curl "https://api.todoist.com/rest/v2/projects" -X POST -d '{ "name": "Task 1 API Automation" }' -H "Content-Type: application/json" -H "Autho
+rization: Bearer $token" -o create_project.txt
+{
+	"id": "2354964169",
+	"parent_id": null,
+	"order": 2,
+	"color": "charcoal",
+	"name": "Task 1 API Automation",
+	"comment_count": 0,
+	"is_shared": false,
+	"is_favorite": false,
+	"is_inbox_project": false,
+	"is_team_inbox": false,
+	"url": "https://app.todoist.com/app/project/6c77Gj2FqvjXcQq8",
+	"view_style": "list",
+	"description": ""
+}

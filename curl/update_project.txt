@@ -1,0 +1,16 @@
+ curl "https://api.todoist.com/rest/v2/projects/$id_project" -X POST -d '{ "name": "Updated Name API Automation" }' -H "Content-Type: application/json" -H "Authorization: Bearer $token" -o update_project.txt
+ {
+	"id": "2354964169",
+	"parent_id": null,
+	"order": 2,
+	"color": "charcoal",
+	"name": "Updated Name API Automation",
+	"comment_count": 0,
+	"is_shared": false,
+	"is_favorite": false,
+	"is_inbox_project": false,
+	"is_team_inbox": false,
+	"url": "https://app.todoist.com/app/project/6c77Gj2FqvjXcQq8",
+	"view_style": "list",
+	"description": ""
+}

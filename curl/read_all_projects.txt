@@ -1,0 +1,33 @@
+curl -X GET https://api.todoist.com/rest/v2/projects -H "Authorization: Bearer $token" -o read_all_projects.txt
+[
+	{
+		"id": "2354963679",
+		"parent_id": null,
+		"order": 0,
+		"color": "charcoal",
+		"name": "Inbox",
+		"comment_count": 0,
+		"is_shared": false,
+		"is_favorite": false,
+		"is_inbox_project": true,
+		"is_team_inbox": false,
+		"url": "https://app.todoist.com/app/project/6c778fwH4J6JhvGR",
+		"view_style": "list",
+		"description": ""
+	},
+	{
+		"id": "2354963692",
+		"parent_id": null,
+		"order": 1,
+		"color": "charcoal",
+		"name": "Home 🏡",
+		"comment_count": 0,
+		"is_shared": false,
+		"is_favorite": false,
+		"is_inbox_project": false,
+		"is_team_inbox": false,
+		"url": "https://app.todoist.com/app/project/6c778j7JMCj4PJ2f",
+		"view_style": "list",
+		"description": ""
+	}
+]

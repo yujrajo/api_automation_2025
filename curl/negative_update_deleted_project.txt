@@ -1,0 +1,2 @@
+curl "https://api.todoist.com/rest/v2/projects/$id_project" -X POST -d '{ "name": "Update a previously deleted project" }' -H "Content-Type: application/json" -H "Authorization: Bearer $token" -o negative_update_deleted_project.txt
+Project not found

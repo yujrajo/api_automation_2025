@@ -1,0 +1,2 @@
+curl "https://api.todoist.com/rest/v2/projects" -X POST -d '{ "description": "Do not send required field"}' -H "Content-Type: application/json" -H "Authorization: Bearer $token" -o negative_do_not_send_required_field_post_body.txt
+Name must be provided for the project creation
