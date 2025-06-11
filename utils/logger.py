@@ -9,7 +9,7 @@ DEFAULT_LOG_FORMAT = "%(asctime)s UTC %(levelname)-8s %(name)-15s  %(message)s"
 
 def get_logger(name, level=DEFAULT_LOG_LEVEL, log_format=DEFAULT_LOG_FORMAT):
     """Method that returns the logger"""
-    base_path = Path(__file__).parent
+    base_path = Path(__file__).parent.parent
     logger = logging.getLogger(name)
     log_file_name = "todoist.log"
 
@@ -21,7 +21,7 @@ def get_logger(name, level=DEFAULT_LOG_LEVEL, log_format=DEFAULT_LOG_FORMAT):
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
 
-    Path(f"{base_path}/logs").mkdir(parents=True,exist_ok=True)
+    Path(f"{base_path}/logs").mkdir(parents=True, exist_ok=True)
 
     file_handler = RotatingFileHandler(
         f"{base_path}/logs/{log_file_name}", maxBytes=5 * 1024 * 1024, backupCount=5
