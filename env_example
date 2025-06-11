@@ -1,0 +1,3 @@
+TOKEN_ASANA=token_for_asana_api
+WORKSPACE_GID=gid_for_the_workspace
+URL_BASE=https://app.asana.com/api/1.0/
