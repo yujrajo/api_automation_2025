@@ -1,0 +1,10 @@
+# Python-specific
+__pycache__/
+# Virtual environment
+venv/
+.venv/
+# Editor and IDE files
+.vscode/
+# Operating system and temporary files
+/logs
+.env
