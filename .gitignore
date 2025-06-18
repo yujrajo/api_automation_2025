@@ -7,3 +7,4 @@ venv/
 .vscode/
 # Operating system and temporary files
 /logs
+.env
