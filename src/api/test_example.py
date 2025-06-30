@@ -1,7 +1,6 @@
-import logging
 from utils.logger import get_logger
 
-LOGGER = get_logger(__name__, logging.DEBUG)
+LOGGER = get_logger(__name__, "DEBUG")
 
 
 class TestExample:
