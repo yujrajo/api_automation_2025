@@ -1,0 +1,65 @@
+{
+  "body": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          },
+          "resource_type": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "project": {
+            "type": "object",
+            "properties": {
+              "gid": {
+                "type": "string"
+              },
+              "resource_type": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "status_code": 200,
+  "headers": {
+    "Content-Type": "",
+    "Content-Length": "",
+    "Connection": "",
+    "Date": "",
+    "location": "",
+    "cache-control": "",
+    "pragma": "",
+    "x-frame-options": "",
+    "x-xss-protection": "",
+    "x-content-type-options": "",
+    "content-security-policy": "",
+    "x-asana-api-version": "",
+    "asana-change": "",
+    "x-envoy-upstream-service-time": "",
+    "server": "",
+    "X-Cache": "",
+    "Via": "",
+    "X-Amz-Cf-Pop": "",
+    "X-Amz-Cf-Id": "",
+    "Referrer-Policy": "",
+    "Strict-Transport-Security": "",
+    "X-Robots-Tag": "",
+    "X-UA-Compatible": "",
+    "Server-Timing": ""
+  }
+}

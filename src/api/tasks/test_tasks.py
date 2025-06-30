@@ -11,6 +11,8 @@ from utils.logger import get_logger
 LOGGER = get_logger(__name__, "DEBUG")
 
 
+@allure.story("Tasks")
+@allure.parent_suite("Tasks")
 class TestTasks:
     @classmethod
     def setup_class(cls) -> None:
@@ -23,41 +25,43 @@ class TestTasks:
         # use the validation library
         cls.validate = ValidateResponse()
         # use random generator with faker
-        cls.faker= Faker()
+        cls.faker = Faker()
 
-    # Remove get_api_data fixture and import variables from config.py
-    # add marker with test type
     @pytest.mark.acceptance
     @pytest.mark.smoke
     @allure.title("Test Create Task")
-    @allure.tag("smoke","acceptance")
-    @allure.label("owner","Joanna Yujra")
+    @allure.tag("smoke", "acceptance")
+    @allure.label("owner", "Joanna Yujra")
     def test_create_task(self, test_log_name: None) -> None:
         """Test for create a Task
 
         Args:
             test_log_name (None): Fixture to log the start and ending of test case
         """
+        url_create_task = f"{url_base}tasks"
+        LOGGER.debug(f"URL CREATE Task: {url_create_task}")
         # body to create the Task
         task_body = {
             "data": {
-                "name": f"Auto Task {self.faker.name()}",
+                "name": f"Auto Task {self.faker.sentence()}",
                 "workspace": workspace_gid,
                 "notes": "These is an auto created task.",
             }
         }
         # call POST endpoint (act)
-        response = requests.post(url=f"{url_base}tasks", headers=headers, json=task_body)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response.json(), indent=4)}")
-        LOGGER.debug(f"=> STATUS CODE: {response.status_code}")
-        self.task_list.append(response.json()["data"]["gid"])
+        response = self.rest_client.send_request("POST",
+                                                 url=url_create_task,
+                                                 headers=headers,
+                                                 body=task_body)
+        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        self.task_list.append(response["body"]["data"]["gid"])
         # assertion
-        assert response.status_code == 201
+        self.validate.validate_response(response, "create_task")
 
     @pytest.mark.acceptance
     @allure.title("Test Get Task")
     @allure.tag("acceptance")
-    @allure.label("owner","Joanna Yujra")
+    @allure.label("owner", "Joanna Yujra")
     def test_get_task(self, create_task: str, test_log_name: None) -> None:
         """Test for get a Task
 
@@ -69,16 +73,17 @@ class TestTasks:
         url_get_task = f"{url_base}tasks/{create_task}"
         LOGGER.debug(f"URL GET Task: {url_get_task}")
         # call GET endpoint (act)
-        response = requests.get(url=url_get_task, headers=headers)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response.json(), indent=4)}")
-        LOGGER.debug(f"=> STATUS CODE: {response.status_code}")
+        response = self.rest_client.send_request("GET",
+                                                 url=url_get_task,
+                                                 headers=headers)
+        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
         # assertion
-        assert response.status_code == 200
+        self.validate.validate_response(response, "get_task")
 
     @pytest.mark.acceptance
     @allure.title("Test Update Task")
     @allure.tag("acceptance")
-    @allure.label("owner","Joanna Yujra")
+    @allure.label("owner", "Joanna Yujra")
     def test_update_task(self, create_task: str, test_log_name: None) -> None:
         """Test for update a Task
 
@@ -92,21 +97,23 @@ class TestTasks:
         # body to update the Task
         update_task_body = {
             "data": {
-                "name": "Auto Updated Task",
+                "name": f"Auto Updated {self.faker.sentence()}",
                 "notes": "These is an auto updated task.",
             }
         }
         # call PUT endpoint (act)
-        response = requests.put(url=url_update_task, headers=headers, json=update_task_body)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response.json(), indent=4)}")
-        LOGGER.debug(f"=> STATUS CODE: {response.status_code}")
+        response = self.rest_client.send_request("PUT",
+                                                 url=url_update_task,
+                                                 headers=headers,
+                                                 body=update_task_body)
+        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
         # assertion
-        assert response.status_code == 200
+        self.validate.validate_response(response, "update_task")
 
     @pytest.mark.acceptance
     @allure.title("Test Delete Task")
     @allure.tag("acceptance")
-    @allure.label("owner","Joanna Yujra")
+    @allure.label("owner", "Joanna Yujra")
     def test_delete_task(self, create_task: str, test_log_name: None) -> None:
         """Test for delete a Task
 
@@ -117,85 +124,86 @@ class TestTasks:
         # url for DELETE Task
         url_delete_task = f"{url_base}tasks/{create_task}"
         LOGGER.debug(f"URL DELETE Task: {url_delete_task}")
-
         # call DELETE endpoint (act)
-        response = self.rest_client.send_request("DELETE", url=url_delete_task, headers=headers)
-        # we dont need loggers
-        # LOGGER.debug(f"=> RESPONSE: {json.dumps(response.json(), indent=4)}")
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response, indent=4)}")
-        # LOGGER.debug(f"=> STATUS CODE: {response.status_code}")
+        response = self.rest_client.send_request("DELETE",
+                                                 url=url_delete_task,
+                                                 headers=headers)
+        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
         # assertion
-        # assert response.status_code == 200
         self.validate.validate_response(response, "delete_task")
 
-    def test_add_task_to_a_project(self,create_project:str,create_task:str):
-        url_add_task_to_project = f"{url_base}tasks/{create_task}"
-        LOGGER.debug(f"URL ADD Task to Project: {url_add_task_to_project}")
+    @pytest.mark.functional
+    @allure.title("Test Create Task with a Project")
+    @allure.tag("functional")
+    @allure.label("owner", "Joanna Yujra")
+    def test_create_task_with_a_project(self, create_project: str):
+        # url for CREATE Task with a project
+        url_create_task_with_project = f"{url_base}tasks"
+        LOGGER.debug(f"URL ADD Task to Project: {url_create_task_with_project}")
+        # body to for Task with a project
         task_body = {
             "data": {
-                "name": "Test task on Project",
+                "name": f"Test task {self.faker.sentence()} on Project",
                 "workspace": workspace_gid,
-                "projects":[
-                    create_project
-                ]
+                "projects": [create_project]
             }
         }
-        # call to endpoint
-        response = requests.post(
-            url=f"{url_add_task_to_project}", headers=headers, json=task_body
-        )
-        LOGGER.debug(response.json())
-        # assert response.status_code == 200
+        response = self.rest_client.send_request("POST",
+                                                 url=url_create_task_with_project,
+                                                 headers=headers,
+                                                 body=task_body)
+        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        self.task_list.append(response["body"]["data"]["gid"])
+        # assertion
+        self.validate.validate_response(response, "create_task")
 
-
-    def test_add_task_to_a_project_section(self,create_section:dict,create_task:str):
+    @pytest.mark.e2e
+    @allure.title("Test Add a Task to a Project's section")
+    @allure.tag("e2e")
+    @allure.label("owner", "Joanna Yujra")
+    def test_add_task_to_a_project_section(self, create_section: str, create_task: str, create_project):
+        # url for ADD Task to the project section
         url_add_task_to_project = f"{url_base}tasks/{create_task}/addProject"
-        LOGGER.debug(f"URL ADD Task to Project: {url_add_task_to_project}")
-        add_task_to_project_body = {
-            "data": {
-                "name": "Test task on section",
-                "workspace": workspace_gid,
-                "projects":[
-                    create_section["project_gid"]
-                ]
-            }
-        }
-        # call to endpoint
-        response = requests.post(
-            url=f"{url_add_task_to_project}", headers=headers, json=add_task_to_project_body
-        )
-        LOGGER.debug(response.json())
-        # get gid task
-        # add task to projects section
-        url_add_task_to_project_section = f"{url_base}tasks/{create_task}/addProject"
         LOGGER.debug(f"URL ADD Task to Project Section: {url_add_task_to_project}")
-        url_add_task_to_project_section = {
+        # body to add Task to section
+        add_task_to_project_section = {
             "data": {
-                "project": create_section["project_gid"],
-                "section": create_section["section_gid"],
-            }
-        }
-        response = requests.post(url=f"{url_add_task_to_project}", headers=headers, json=url_add_task_to_project_section)
-        assert response.status_code == 200
-
-
-    def test_insert_a_task_before_other_task_on_a_section(self,create_task_on_section:dict, create_task:str):
-        # url for INSERT a Task on a Project before another task
-        url_insert_task = f"{url_base}tasks/{create_task}/addProject"
-        LOGGER.debug(f"URL DELETE Task: {url_insert_task}")
-        insert_task_body = {
-            "data": {
-                "project": create_task_on_section["project_gid"],
-                "insert_before": create_task_on_section["task_gid"],
+                "project": create_project,
+                "section": create_section,
             }
         }
         # call POST endpoint (act)
-        response = requests.post(url=f"{url_insert_task}", headers=headers, json=insert_task_body)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response.json(), indent=4)}")
-        LOGGER.debug(f"=> STATUS CODE: {response.status_code}")
-        # self.task_list.append(response.json()["data"]["gid"])
+        response = self.rest_client.send_request("POST",
+                                                 url=url_add_task_to_project,
+                                                 headers=headers,
+                                                 body=add_task_to_project_section)
+        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
         # assertion
-        assert response.status_code == 200
+        self.validate.validate_response(response, "add_task_to_project_section")
+
+    @pytest.mark.e2e
+    @allure.title("Test Insert a Task before another task on a Project's section")
+    @allure.tag("e2e")
+    @allure.label("owner", "Joanna Yujra")
+    def test_insert_a_task_before_other_task_on_a_section(self, create_task_on_section: str, create_task: str, create_project:str):
+        # url for INSERT a Task on a Project before another task
+        url_insert_task = f"{url_base}tasks/{create_task}/addProject"
+        LOGGER.debug(f"URL DELETE Task: {url_insert_task}")
+        # body to insert Task into Projects Section
+        insert_task_body = {
+            "data": {
+                "project": create_project,
+                "insert_before": create_task_on_section,
+            }
+        }
+        # call POST endpoint (act)
+        response = self.rest_client.send_request("POST",
+                                                 url=url_insert_task,
+                                                 headers=headers,
+                                                 body=insert_task_body)
+        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        # assertion
+        self.validate.validate_response(response, "insert_task_before_another")
 
 
     @classmethod
@@ -205,8 +213,10 @@ class TestTasks:
         LOGGER.info("Test Task Teardown Class")
         for task_gid in cls.task_list:
             url_delete_task = f"{url_base}tasks/{task_gid}"
-            LOGGER.debug(f"=> Delete Task Fixture: {url_delete_task}")
-            response = requests.delete(url=url_delete_task, headers=headers)
-            LOGGER.debug(f"=> STATUS CODE: {response.status_code}")
-            if response.status_code == 200:
+            LOGGER.debug(f"Delete Task Fixture: {url_delete_task}")
+            response = cls.rest_client.send_request("DELETE",
+                                                    url=url_delete_task,
+                                                    headers=headers)
+            LOGGER.debug(f"=> STATUS CODE: {response['status_code']}")
+            if response["status_code"] == 200:
                 LOGGER.debug(f"=> Task with GID {task_gid} deleted")
