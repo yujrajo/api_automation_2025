@@ -1,0 +1,175 @@
+{
+  "body": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          },
+          "resource_type": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "modified_at": {
+            "type": "string"
+          },
+          "minimum_access_level_for_sharing": {
+            "type": "string"
+          },
+          "minimum_access_level_for_customization": {
+            "type": "string"
+          },
+          "default_access_level": {
+            "type": "string"
+          },
+          "default_view": {
+            "type": "string"
+          },
+          "team": {
+            "type": "object",
+            "properties": {
+              "gid": {
+                "type": "string"
+              },
+              "resource_type": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "workspace": {
+            "type": "object",
+            "properties": {
+              "gid": {
+                "type": "string"
+              },
+              "resource_type": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "privacy_setting": {
+            "type": "string"
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "current_status": {
+            "type": "null"
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "gid": {
+                "type": "string"
+              },
+              "resource_type": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "gid": {
+                  "type": "string"
+                },
+                "resource_type": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "custom_field_settings": {
+            "type": "array"
+          },
+          "custom_fields": {
+            "type": "array"
+          },
+          "permalink_url": {
+            "type": "string"
+          },
+          "followers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "gid": {
+                  "type": "string"
+                },
+                "resource_type": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "icon": {
+            "type": "string"
+          },
+          "color": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    }
+  },
+  "status_code": 201,
+  "headers": {
+    "Content-Type": "",
+    "Content-Length": "",
+    "Connection": "",
+    "Date": "",
+    "location": "",
+    "cache-control": "",
+    "pragma": "",
+    "x-frame-options": "",
+    "x-xss-protection": "",
+    "x-content-type-options": "",
+    "content-security-policy": "",
+    "x-asana-api-version": "",
+    "asana-change": "",
+    "x-envoy-upstream-service-time": "",
+    "server": "",
+    "X-Cache": "",
+    "Via": "",
+    "X-Amz-Cf-Pop": "",
+    "X-Amz-Cf-Id": "",
+    "Referrer-Policy": "",
+    "Strict-Transport-Security": "",
+    "X-Robots-Tag": "",
+    "X-UA-Compatible": "",
+    "Server-Timing": ""
+  }
+}

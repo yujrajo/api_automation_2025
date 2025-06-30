@@ -1,0 +1,154 @@
+{
+  "body": {
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "gid": {
+            "type": "string"
+          },
+          "projects": {
+            "type": "array"
+          },
+          "memberships": {
+            "type": "array"
+          },
+          "resource_type": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "modified_at": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": ["string", "null"]
+          },
+          "start_at": {
+            "type": ["string", "null"]
+          },
+          "start_on": {
+            "type": ["string", "null"]
+          },
+          "resource_subtype": {
+            "type": "string"
+          },
+          "due_at": {
+            "type": ["string", "null"]
+          },
+          "due_on": {
+            "type": ["string", "null"]
+          },
+          "completed_at": {
+            "type": ["string", "null"]
+          },
+          "assignee_status": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          },
+          "actual_time_minutes": {
+            "type": ["number", "null"]
+          },
+          "workspace": {
+            "type": "object",
+            "properties": {
+              "gid": {
+                "type": "string"
+              },
+              "resource_type": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "num_hearts": {
+            "type": "number"
+          },
+          "num_likes": {
+            "type": "number"
+          },
+          "parent": {
+            "type": ["string", "null"]
+          },
+          "tags": {
+            "type": "array"
+          },
+          "hearted": {
+            "type": "boolean"
+          },
+          "liked": {
+            "type": "boolean"
+          },
+          "hearts": {
+            "type": "array"
+          },
+          "likes": {
+            "type": "array"
+          },
+          "custom_fields": {
+            "type": "array"
+          },
+          "followers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "gid": {
+                  "type": "string"
+                },
+                "resource_type": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "permalink_url": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "status_code": 201,
+  "headers": {
+    "Content-Type": "",
+    "Content-Length": "",
+    "Connection": "",
+    "Date": "",
+    "location": "",
+    "cache-control": "",
+    "pragma": "",
+    "x-frame-options": "",
+    "x-xss-protection": "",
+    "x-content-type-options": "",
+    "content-security-policy": "",
+    "x-asana-api-version": "",
+    "asana-change": "",
+    "x-envoy-upstream-service-time": "",
+    "server": "",
+    "X-Cache": "",
+    "Via": "",
+    "X-Amz-Cf-Pop": "",
+    "X-Amz-Cf-Id": "",
+    "Referrer-Policy": "",
+    "Strict-Transport-Security": "",
+    "X-Robots-Tag": "",
+    "X-UA-Compatible": "",
+    "Server-Timing": ""
+  }
+}
