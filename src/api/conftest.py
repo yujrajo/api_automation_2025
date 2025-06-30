@@ -2,7 +2,6 @@ import requests
 import pytest
 from utils.logger import get_logger
 from config.config import url_base, headers, workspace_gid
-from helper.rest_client import RestClient
 
 
 LOGGER = get_logger(__name__, "DEBUG")
