@@ -5,6 +5,7 @@ import pytest
 from config.config import url_base, headers, workspace_gid
 from helper.rest_client import RestClient
 from helper.validate_response import ValidateResponse
+from utils.influxdb_connection import InfluxDBConnection
 from utils.logger import get_logger
 
 LOGGER = get_logger(__name__, "DEBUG")
@@ -25,6 +26,14 @@ class TestProjects:
         cls.validate = ValidateResponse()
         # use random generator with faker
         cls.faker = Faker()
+        # use influxdb_client
+        cls.influxdb_client = InfluxDBConnection()
+
+    def setup_method(self) -> None:
+        self.response = None
+
+    def teardown_method(self) -> None:
+        self.influxdb_client.store_data_influxdb(self.response, "projects")
 
     @pytest.mark.acceptance
     @pytest.mark.smoke
@@ -47,14 +56,15 @@ class TestProjects:
             }
         }
         # call POST endpoint (act)
-        response = self.rest_client.send_request("POST",
+        self.response = self.rest_client.send_request("POST",
                                                  url=url_create_project,
                                                  headers=headers,
                                                  body=project_body)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response, indent=4)}")
-        self.project_list.append(response["body"]["data"]["gid"])
+        LOGGER.debug(f"=> RESPONSE: {json.dumps(self.response, indent=4)}")
+        self.project_list.append(self.response["body"]["data"]["gid"])
         # assertion
-        self.validate.validate_response(response, "create_project")
+        self.validate.validate_response(self.response, "create_project")
+
 
     @pytest.mark.acceptance
     @allure.title("Test Get Project")
@@ -71,12 +81,12 @@ class TestProjects:
         url_get_project = f"{url_base}projects/{create_project}"
         LOGGER.debug(f"URL GET Project: {url_get_project}")
         # call GET endpoint (act)
-        response = self.rest_client.send_request("GET",
+        self.response = self.rest_client.send_request("GET",
                                                  url=url_get_project,
                                                  headers=headers)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"=> RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "get_project")
+        self.validate.validate_response(self.response, "get_project")
 
     @pytest.mark.acceptance
     @allure.title("Test Update Project")
@@ -102,13 +112,13 @@ class TestProjects:
             }
         }
         # call PUT endpoint (act)
-        response = self.rest_client.send_request("PUT",
+        self.response = self.rest_client.send_request("PUT",
                                                  url=url_update_project,
                                                  headers=headers,
                                                  body=update_project_body)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"=> RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "update_project")
+        self.validate.validate_response(self.response, "update_project")
 
     @pytest.mark.acceptance
     @allure.title("Test Delete Project")
@@ -125,12 +135,12 @@ class TestProjects:
         url_delete_project = f"{url_base}projects/{create_project}"
         LOGGER.debug(f"URL DELETE Project: {url_delete_project}")
         # call DELETE endpoint (act)
-        response = self.rest_client.send_request("DELETE",
+        self.response = self.rest_client.send_request("DELETE",
                                                  url=url_delete_project,
                                                  headers=headers)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"=> RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "delete_project")
+        self.validate.validate_response(self.response, "delete_project")
 
     @pytest.mark.functional
     @allure.title("Test validate error message when trying to create project without body")
@@ -146,12 +156,12 @@ class TestProjects:
         url_create_project = f"{url_base}projects"
         LOGGER.debug(f"URL CREATE Project: {url_create_project}")
         # call POST endpoint (act)
-        response = self.rest_client.send_request("POST",
+        self.response = self.rest_client.send_request("POST",
                                                  url=url_create_project,
                                                  headers=headers)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"=> RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "create_project_without_body")
+        self.validate.validate_response(self.response, "create_project_without_body")
 
     @pytest.mark.functional
     @allure.title("Test create project with different special characters names")
@@ -178,14 +188,14 @@ class TestProjects:
             }
         }
         # call POST endpoint (act)
-        response = self.rest_client.send_request("POST",
+        self.response = self.rest_client.send_request("POST",
                                                  url=url_create_project,
                                                  headers=headers,
                                                  body=project_body)
-        LOGGER.debug(f"=> RESPONSE: {json.dumps(response, indent=4)}")
-        self.project_list.append(response["body"]["data"]["gid"])
+        LOGGER.debug(f"=> RESPONSE: {json.dumps(self.response, indent=4)}")
+        self.project_list.append(self.response["body"]["data"]["gid"])
         # assertion
-        self.validate.validate_response(response, "create_project")
+        self.validate.validate_response(self.response, "create_project")
 
     @classmethod
     def teardown_class(cls) -> None:

@@ -38,13 +38,15 @@ class RestClient:
             response_updated["status_code"] = response.status_code
             response_updated["headers"] = dict(response.headers)
             response_updated["time"] = response.elapsed.total_seconds()
-            response_updated["request"] = response.request
+            response_updated["request"] = {"url":response.request.url,"method":response.request.method}
 
         except requests.exceptions.HTTPError as e:
             LOGGER.error(f"HTTP Error: {e}")
             response_updated["body"] = response.json() if response.text else {"message": "HTTP Error"}
             response_updated["status_code"] = response.status_code
             response_updated["headers"] = dict(response.headers)
+            response_updated["time"] = response.elapsed.total_seconds()
+            response_updated["request"] = {"url":response.request.url,"method":response.request.method}
 
         except requests.exceptions.ConnectionError as e:
             LOGGER.error(f"Connection Error: {e}")
@@ -57,5 +59,7 @@ class RestClient:
             response_updated["body"] = response.json() if response.text else {"message": "Request Failed"}
             response_updated["status_code"] = response.status_code
             response_updated["headers"] = {}
+            response_updated["time"] = response.elapsed.total_seconds()
+            response_updated["request"] = {"url":response.request.url,"method":response.request.method}
 
         return response_updated
