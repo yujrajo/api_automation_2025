@@ -37,6 +37,8 @@ class RestClient:
             response_updated["body"] = response.json() if response.text else {"message": "No body content"}
             response_updated["status_code"] = response.status_code
             response_updated["headers"] = dict(response.headers)
+            response_updated["time"] = response.elapsed.total_seconds()
+            response_updated["request"] = response.request
 
         except requests.exceptions.HTTPError as e:
             LOGGER.error(f"HTTP Error: {e}")
