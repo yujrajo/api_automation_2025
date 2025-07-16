@@ -5,6 +5,7 @@ import pytest
 from config.config import url_base, headers
 from helper.rest_client import RestClient
 from helper.validate_response import ValidateResponse
+from utils.influxdb_connection import InfluxDBConnection
 from utils.logger import get_logger
 
 LOGGER = get_logger(__name__, "DEBUG")
@@ -24,6 +25,14 @@ class TestSections:
         cls.validate = ValidateResponse()
         # use random generator with faker
         cls.faker = Faker()
+        # use influxdb_client
+        cls.influxdb_client = InfluxDBConnection()
+
+    def setup_method(self) -> None:
+        self.response = None
+
+    def teardown_method(self) -> None:
+        self.influxdb_client.store_data_influxdb(self.response, "sections")
 
     @pytest.mark.acceptance
     @pytest.mark.smoke
@@ -46,13 +55,13 @@ class TestSections:
             }
         }
         # call POST endpoint (act)
-        response = self.rest_client.send_request("POST",
+        self.response = self.rest_client.send_request("POST",
                                                  url=url_create_section,
                                                  headers=headers,
                                                  body=section_body)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "create_section")
+        self.validate.validate_response(self.response, "create_section")
 
     @pytest.mark.acceptance
     @allure.title("Test Get Section")
@@ -69,12 +78,12 @@ class TestSections:
         url_get_section = f"{url_base}sections/{create_section}"
         LOGGER.debug(f"URL GET Section: {url_get_section}")
         # call GET endpoint (act)
-        response = self.rest_client.send_request("GET",
+        self.response = self.rest_client.send_request("GET",
                                                  url=url_get_section,
                                                  headers=headers)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "get_section")
+        self.validate.validate_response(self.response, "get_section")
 
     @pytest.mark.acceptance
     @allure.title("Test Update Section")
@@ -97,13 +106,13 @@ class TestSections:
             }
         }
         # call PUT endpoint (act)
-        response = self.rest_client.send_request("PUT",
+        self.response = self.rest_client.send_request("PUT",
                                                  url=url_update_section,
                                                  headers=headers,
                                                  body=update_section_body)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "update_section")
+        self.validate.validate_response(self.response, "update_section")
 
     @pytest.mark.acceptance
     @allure.title("Test Delete Section")
@@ -120,12 +129,12 @@ class TestSections:
         url_delete_section = f"{url_base}sections/{create_section}"
         LOGGER.debug(f"URL DELETE Section: {url_delete_section}")
         # call DELETE endpoint (act)
-        response = self.rest_client.send_request("DELETE",
+        self.response = self.rest_client.send_request("DELETE",
                                                  url=url_delete_section,
                                                  headers=headers)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "delete_section")
+        self.validate.validate_response(self.response, "delete_section")
 
     @pytest.mark.functional
     @allure.title("Test verify error message when updating a section with different string section GID")
@@ -151,10 +160,15 @@ class TestSections:
             }
         }
         # call PUT endpoint (act)
-        response = self.rest_client.send_request("PUT",
+        self.response = self.rest_client.send_request("PUT",
                                                  url=url_update_section,
                                                  headers=headers,
                                                  body=update_section_body)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "update_section_with_string_section_gid")
+        self.validate.validate_response(self.response, "update_section_with_string_section_gid")
+
+    @classmethod
+    def teardown_class(cls) -> None:
+        """Close influx connection after all tests"""
+        cls.influxdb_client.close()

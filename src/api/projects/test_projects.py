@@ -211,3 +211,5 @@ class TestProjects:
             LOGGER.debug(f"=> STATUS CODE: {response['status_code']}")
             if response["status_code"] == 200:
                 LOGGER.debug(f"=> Project with GID {project_gid} deleted")
+
+        cls.influxdb_client.close()

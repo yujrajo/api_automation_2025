@@ -6,6 +6,7 @@ import requests
 from config.config import url_base, headers, workspace_gid
 from helper.rest_client import RestClient
 from helper.validate_response import ValidateResponse
+from utils.influxdb_connection import InfluxDBConnection
 from utils.logger import get_logger
 
 LOGGER = get_logger(__name__, "DEBUG")
@@ -26,6 +27,14 @@ class TestTasks:
         cls.validate = ValidateResponse()
         # use random generator with faker
         cls.faker = Faker()
+        # use influxdb_client
+        cls.influxdb_client = InfluxDBConnection()
+
+    def setup_method(self) -> None:
+        self.response = None
+
+    def teardown_method(self) -> None:
+        self.influxdb_client.store_data_influxdb(self.response, "tasks")
 
     @pytest.mark.acceptance
     @pytest.mark.smoke
@@ -49,14 +58,14 @@ class TestTasks:
             }
         }
         # call POST endpoint (act)
-        response = self.rest_client.send_request("POST",
+        self.response = self.rest_client.send_request("POST",
                                                  url=url_create_task,
                                                  headers=headers,
                                                  body=task_body)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
-        self.task_list.append(response["body"]["data"]["gid"])
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
+        self.task_list.append(self.response["body"]["data"]["gid"])
         # assertion
-        self.validate.validate_response(response, "create_task")
+        self.validate.validate_response(self.response, "create_task")
 
     @pytest.mark.acceptance
     @allure.title("Test Get Task")
@@ -73,12 +82,12 @@ class TestTasks:
         url_get_task = f"{url_base}tasks/{create_task}"
         LOGGER.debug(f"URL GET Task: {url_get_task}")
         # call GET endpoint (act)
-        response = self.rest_client.send_request("GET",
+        self.response = self.rest_client.send_request("GET",
                                                  url=url_get_task,
                                                  headers=headers)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "get_task")
+        self.validate.validate_response(self.response, "get_task")
 
     @pytest.mark.acceptance
     @allure.title("Test Update Task")
@@ -102,13 +111,13 @@ class TestTasks:
             }
         }
         # call PUT endpoint (act)
-        response = self.rest_client.send_request("PUT",
+        self.response = self.rest_client.send_request("PUT",
                                                  url=url_update_task,
                                                  headers=headers,
                                                  body=update_task_body)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "update_task")
+        self.validate.validate_response(self.response, "update_task")
 
     @pytest.mark.acceptance
     @allure.title("Test Delete Task")
@@ -125,12 +134,12 @@ class TestTasks:
         url_delete_task = f"{url_base}tasks/{create_task}"
         LOGGER.debug(f"URL DELETE Task: {url_delete_task}")
         # call DELETE endpoint (act)
-        response = self.rest_client.send_request("DELETE",
+        self.response = self.rest_client.send_request("DELETE",
                                                  url=url_delete_task,
                                                  headers=headers)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "delete_task")
+        self.validate.validate_response(self.response, "delete_task")
 
     @pytest.mark.functional
     @allure.title("Test Create Task with a Project")
@@ -148,14 +157,14 @@ class TestTasks:
                 "projects": [create_project]
             }
         }
-        response = self.rest_client.send_request("POST",
+        self.response = self.rest_client.send_request("POST",
                                                  url=url_create_task_with_project,
                                                  headers=headers,
                                                  body=task_body)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
-        self.task_list.append(response["body"]["data"]["gid"])
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
+        self.task_list.append(self.response["body"]["data"]["gid"])
         # assertion
-        self.validate.validate_response(response, "create_task")
+        self.validate.validate_response(self.response, "create_task")
 
     @pytest.mark.e2e
     @allure.title("Test Add a Task to a Project's section")
@@ -173,13 +182,13 @@ class TestTasks:
             }
         }
         # call POST endpoint (act)
-        response = self.rest_client.send_request("POST",
+        self.response = self.rest_client.send_request("POST",
                                                  url=url_add_task_to_project,
                                                  headers=headers,
                                                  body=add_task_to_project_section)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "add_task_to_project_section")
+        self.validate.validate_response(self.response, "add_task_to_project_section")
 
     @pytest.mark.e2e
     @allure.title("Test Insert a Task before another task on a Project's section")
@@ -197,13 +206,13 @@ class TestTasks:
             }
         }
         # call POST endpoint (act)
-        response = self.rest_client.send_request("POST",
+        self.response = self.rest_client.send_request("POST",
                                                  url=url_insert_task,
                                                  headers=headers,
                                                  body=insert_task_body)
-        LOGGER.debug(f"RESPONSE: {json.dumps(response, indent=4)}")
+        LOGGER.debug(f"RESPONSE: {json.dumps(self.response, indent=4)}")
         # assertion
-        self.validate.validate_response(response, "insert_task_before_another")
+        self.validate.validate_response(self.response, "insert_task_before_another")
 
 
     @classmethod
@@ -220,3 +229,5 @@ class TestTasks:
             LOGGER.debug(f"=> STATUS CODE: {response['status_code']}")
             if response["status_code"] == 200:
                 LOGGER.debug(f"=> Task with GID {task_gid} deleted")
+
+        cls.influxdb_client.close()
